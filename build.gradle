@@ -35,4 +35,8 @@ dependencies {
 
 	compile group: 'org.codehaus.gmavenplus', name: 'gmavenplus-plugin', version: '1.6.3'
 
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+	testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+
+
 }
