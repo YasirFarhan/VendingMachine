@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vending Machine</title>
+        <link href="css/bootstrap.css" rel="stylesheet">
+<style>
+        hr {    border: none;    height: 1px;    width: 70%;    background-color: black;}
+        #heading {  text-align: center;  font-size: 60px;  font-weight: bold;}
+        .userOutput{  border: 1px;  text-align: left; border-style: solid;  width: 200px;  height: 60px; align-self: center;}
+          #eachMenuItem{  margin: 20px;  height: 140px;  width: 180px; color: black;}*/
+                #eachMenuItem:hover{  margin: 20px;  height: auto;  width: 180px; font-size: 20px;}
+        .menuNumber{text-align: left;}
+</style> 
+</head>
+<body>
+<h1 id="heading"> Vending Machine</h1>
+<input type="number"    id="amount" style="display:none;">
+<input type="number"    id="itemNum" style="display:none;">
+<div id="errorMessages"></div>
+<hr/>
+<div class="container">
+<div class="row">
+<div class="col-md-8">
+<div id="menuItems" class="menu" style="text-align:center;"></div>
+</div>
+
+<div class="col-md-4">
+<div style="border: 2px dotted;">
+
+<div class="row">
+<h3 style="text-align: center"> Total $ In</h3>
+</div>
+<div class="row">
+<div class="col-md-2" style="align:center;"></div>
+<div class="col-md-6" style="align:center;">
+<div id="dollarsIn" class="userOutput" style="border:1px; border-style:solid;"> </div><br/>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-1"></div>
+<button id="addDollar" class="col-md-4 btn-default" type="button" style="margin: 6px;" >Add Dollar</button>
+<button id="addQuarter" class="col-md-4 btn-default" type="button" style="margin: 6px;" > Add Quarter</button>
+</div>
+<br/><br/>
+<div class="row">
+<div class="col-md-1"></div>
+    <button id="addDime" class="col-md-4 btn-default" type="button" style="margin: 6px;" >Add Dime</button>
+    <button id="addNickel" class="col-md-4 btn-default" type="button" style="margin: 6px;" > Add Nickel</button>
+</div>
+<br/><br/><hr/><br/>
+
+<div class="row">
+<label for="message" class="col-md-12 control-label" style="text-align: center;"> Messages : </label></br>
+</div>
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-6">
+<div id="message" class="userOutput"></div>
+</div>
+</div>
+<br/><br/><br/>
+
+<div class="row">
+<label for="item" class="col-md-12 control-label" style="text-align: center;"> Item : </label>
+</div>
+
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-6">
+<div id="item" class="userOutput">
+</div>
+</div>
+</div>
+<br/>
+
+<div class="row">
+<div class="col-md-3"></div>
+<div class="col-md-6">
+<button id="makePurcahse" class="col-md-12 btn-default" type="button"> Make Purchase</button>
+</div>
+</div><hr/><br/>
+
+<div class="row">
+<label for="change" class="col-md-12 control-label" style="text-align: center;"> Change : </label><br/>
+</div>
+<div class="row">
+<div class="col-md-2"></div>
+<div class="col-md-6">
+<div id="change" class="userOutput"></div>
+</div>
+</div>
+</br>
+<div class="row">
+<div class="col-md-3"></div>
+<div class="col-md-6">
+<button id="changeReturn" class="col-md-12 btn-default" type="button"  > Change Return</button>
+</div>
+</div>
+
+
+
+
+
+
+</div>
+</div>
+</div>
+<!-- <input type="number"    id="amount" style="display: none;">
+<input type="number"    id="itemNum" style="display: none;"> -->
+<script src="js/jquery-3.0.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/home.js"></script>
+
+</body>
+ </html>

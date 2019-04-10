@@ -26,4 +26,13 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
+	testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.5'
+
+	testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+	testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+
+	compile group: 'org.codehaus.gmavenplus', name: 'gmavenplus-plugin', version: '1.6.3'
+
 }
