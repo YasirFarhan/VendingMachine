@@ -1,10 +1,12 @@
 package com.vendingmachine.vendingmachine.controller;
 
+import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
 import com.vendingmachine.vendingmachine.serviceLayer.VendingMachineServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,4 +23,9 @@ public class Controller {
         return item;
     }
 
+    @GetMapping(path = "/money/{amount}/item/{selectedItem}")
+    public Change purchaseItem(@PathVariable double amount, @PathVariable Integer selectedItem) {
+
+        return  serviceLayer.purchaseItem(amount, selectedItem);
+    }
 }

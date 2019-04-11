@@ -1,5 +1,6 @@
 package com.vendingmachine.vendingmachine.controller;
 
+import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.serviceLayer.VendingMachineServiceLayer;
 import org.json.simple.JSONObject;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,25 +36,19 @@ public class ControllerTestWithJUnit {
 
     @Test
     public void testGetAllItems() throws Exception {
-/*
-
-        Item item = new Item();
-        item.setId(1);
-        item.setName("Coke");
-        item.setPrice(1.50);
-        item.setQuantity(10);
-
-*/
-
-//        JSONObject jsonObject = new JSONObject();
-
-//        jsonObject.put("1", item);
-
-
         mockMvc.perform(get("/items").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
         Mockito.verify(service, Mockito.times(1)).getAllItems();
     }
+
+    @Test
+    public void testPurcahseItem() throws Exception {
+        mockMvc.perform(get("/money/10/item/5").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful());
+        Mockito.verify(service, Mockito.times(1)).purchaseItem(10d, 5);
+    }
+
+
 
 }
