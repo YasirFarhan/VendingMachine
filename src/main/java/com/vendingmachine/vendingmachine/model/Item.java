@@ -27,6 +27,7 @@ public class Item {
     @Column(ItemsTable.Columns.PRICE)
     private double price;
 
+
     @Column(ItemsTable.Columns.QUANTITY)
     private int quantity;
 
@@ -60,5 +61,19 @@ public class Item {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+
+    //////////
+
+    @Column(ItemsTable.Columns.PRICE)
+    private Float priceFloat;
+
+    public Float getPriceFloat() {
+        return priceFloat;
+    }
+
+    public void setPriceFloat(Float priceFloat) {
+        this.priceFloat = priceFloat;
     }
 }

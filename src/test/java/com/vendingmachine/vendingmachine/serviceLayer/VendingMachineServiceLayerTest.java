@@ -62,8 +62,10 @@ public class VendingMachineServiceLayerTest {
         Item item1 = new Item();
         item1.setId(5);
         item1.setName("Coke");
-        item1.setPrice(2);
         item1.setQuantity(10);
+        item1.setPrice(2d);
+        //float
+        item1.setPriceFloat(2.00f);
         return item1;
     }
 
@@ -73,23 +75,79 @@ public class VendingMachineServiceLayerTest {
         optionalItem.get().setName(item.getName());
         optionalItem.get().setPrice(item.getPrice());
         optionalItem.get().setQuantity(item.getQuantity());
+        // float
+        optionalItem.get().setPriceFloat(item.getPriceFloat());
         return optionalItem;
     }
 
 
-    @Test
-    public void testPurcahseItemReturnsCorrectChangeInQuartersOnly() {
-        Item item = getOneItem();
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
-        service.purchaseItem(5, 5);
-        Change change = new Change();
-        change.calculateChange(5.00d);
-        double amount = 3d;
-        Mockito.verify(changeMock, Mockito.times(1)).calculateChange(amount);
+    /*  @Test
+      public void testChangeInQuarters() {
+          Item item = getOneItem();
+          Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+          Change change1 = service.purchaseItem(5d, 5);
+          Assert.assertEquals(change1.getQuarters(), 12);
 
-        Assert.assertEquals((5 * 4), change.getQuarters());
+          Change change2 = service.purchaseItem(4.5d, 5);
+          Assert.assertEquals(change2.getQuarters(), 10);
+
+          Change change3 = service.purchaseItem(4.53d, 5);
+          Assert.assertEquals(change3.getQuarters(), 10);
+
+          Change change4 = service.purchaseItem(4.70d, 5);
+          Assert.assertEquals(change4.getQuarters(), 10);
+
+          Change change5 = service.purchaseItem(4.99d, 5);
+          Assert.assertEquals(change5.getQuarters(), 11);
+      }*/
+// float senarios
+    @Test
+    public void testChangeInQuarters() {
+        Item item = getOneItem();
+        float[] amount = {5f, 4.5f, 5.53f, 4.7f, 4.99f};
+        int[] changeInQuarters = {12, 10, 14, 10, 11};
+
+        for (int i = 0; i < amount.length; i++) {
+            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+            System.out.println("amount: " + amount[i] + " qtrs: " + changeInQuarters[i]);
+
+            Change change1 = service.purchaseItemFloat(amount[i], 5);
+            Assert.assertEquals(change1.getQuarters(), changeInQuarters[i]);
+        }
+
+
+    }
+
+    @Test
+    public void testChangeInDime() {
+        Item item = getOneItem();
+        float[] amount = {5f, 4.5f, 5.60f, 4.80f, 4.99f};
+        int[] changeInDimes = {0, 0, 1, 0, 2};
+
+        for (int i = 0; i < amount.length; i++) {
+            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+            System.out.println("amount: " + amount[i] + " dimes: " + changeInDimes[i]);
+
+            Change change1 = service.purchaseItemFloat(amount[i], 5);
+            Assert.assertEquals(change1.getDimes(), changeInDimes[i]);
+        }
+
     }
 
 
+    @Test
+    public void testChangeInNickels() {
+        Item item = getOneItem();
+        float[] amount = {5.00f, 5.05f, 4.55f, 5.65f, 4.99f};
+        int[] changeInNickels = {0, 1, 1, 1, 1};
+
+        for (int i = 0; i < amount.length; i++) {
+            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+            System.out.println("amount: " + amount[i] + " Nickels: " + changeInNickels[i]);
+
+            Change change1 = service.purchaseItemFloat(amount[i], 5);
+            Assert.assertEquals(change1.getNickels(), changeInNickels[i]);
+        }
+    }
 
 }

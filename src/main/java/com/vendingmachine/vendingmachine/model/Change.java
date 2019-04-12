@@ -42,10 +42,5 @@ public class Change {
         this.pennies = pennies;
     }
 
-    public void calculateChange(double amount) {
-        this.quarters = (int) (amount * 4d);
-        this.nickels=0;
-        this.pennies=0;
-        this.dimes=0;
-    }
+
 }
