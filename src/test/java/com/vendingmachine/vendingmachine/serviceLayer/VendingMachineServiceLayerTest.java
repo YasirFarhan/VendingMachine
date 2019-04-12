@@ -3,7 +3,6 @@ package com.vendingmachine.vendingmachine.serviceLayer;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
-import jdk.nashorn.internal.runtime.options.Option;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.apache.cassandra.utils.concurrent.WaitQueue.any;
 
 @RunWith(SpringRunner.class)
 public class VendingMachineServiceLayerTest {
@@ -141,8 +138,9 @@ public class VendingMachineServiceLayerTest {
         float[] amount = {5.00f, 5.05f, 4.55f, 5.65f, 4.80f};
         int[] changeInNickels = {0, 1, 1, 1, 1};
 
+        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+
         for (int i = 0; i < amount.length; i++) {
-            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
             System.out.println("amount: " + amount[i] + " Nickels: " + changeInNickels[i]);
 
             Change change1 = service.purchaseItemFloat(amount[i], 5);
@@ -156,14 +154,43 @@ public class VendingMachineServiceLayerTest {
         Item item = getOneItem();
         float[] amount = {5.00f, 5.06f, 4.53f, 5.64f, 4.82f};
         int[] changeInPenies = {0, 1, 3, 4, 2};
+        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
 
         for (int i = 0; i < amount.length; i++) {
-            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
             System.out.println("amount: " + amount[i] + " Pennies: " + changeInPenies[i]);
 
             Change change1 = service.purchaseItemFloat(amount[i], 5);
             Assert.assertEquals(change1.getPennies(), changeInPenies[i]);
         }
     }
+
+    @Test
+    public void testCompleteChangeFor5DollarsAnd66CentsInput() {
+        Item item = getOneItem();
+
+        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+
+        Change change1 = service.purchaseItemFloat(5.66f, 5);
+        Assert.assertEquals(change1.getQuarters(), 14);
+        Assert.assertEquals(change1.getDimes(), 1);
+        Assert.assertEquals(change1.getNickels(), 1);
+        Assert.assertEquals(change1.getPennies(), 1);
+    }
+
+    @Test
+    public void testNoChangeIsGivenWhenTheAmountIsEqualToThePrice() {
+        Item item = getOneItem();
+
+        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+
+        Change change1 = service.purchaseItemFloat(2f, 5);
+        Assert.assertEquals(0, change1.getQuarters());
+        Assert.assertEquals(0, change1.getDimes());
+        Assert.assertEquals(0, change1.getNickels());
+        Assert.assertEquals(0, change1.getPennies());
+    }
+
+
+
 
 }

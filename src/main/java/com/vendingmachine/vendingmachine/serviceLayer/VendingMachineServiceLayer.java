@@ -3,8 +3,6 @@ package com.vendingmachine.vendingmachine.serviceLayer;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
-import groovyjarjarantlr.StringUtils;
-import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +72,32 @@ public class VendingMachineServiceLayer {
         int quarters = amountInPennies / 25;
         change.setQuarters(quarters);
         // Dimes
+        int remainingPennies = amountInPennies % 25;
+        if (remainingPennies / 10 > 0) {
+            change.setDimes(remainingPennies / 10);
+        }
+        // Nickels
+
+        remainingPennies = remainingPennies % 10;
+
+        if (remainingPennies / 5 > 0) {
+            change.setNickels(remainingPennies / 5);
+        }
+        remainingPennies = remainingPennies % 5;
+
+
+        if (remainingPennies / 1 > 0) {
+        change.setPennies(Math.round(remainingPennies));
+        }
+
+        return change;
+    }
+/*    private Change calcualteChangeFloat(Float amount) {
+        Change change = new Change();
+        int amountInPennies = (int) (amount * 100f);
+        int quarters = amountInPennies / 25;
+        change.setQuarters(quarters);
+        // Dimes
         int remainingPennies = amountInPennies - quarters * 25;
         if (remainingPennies / 10 > 0) {
             change.setDimes(remainingPennies / 10);
@@ -90,5 +114,5 @@ public class VendingMachineServiceLayer {
 
 
         return change;
-    }
+    }*/
 }
