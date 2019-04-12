@@ -138,7 +138,7 @@ public class VendingMachineServiceLayerTest {
     @Test
     public void testChangeInNickels() {
         Item item = getOneItem();
-        float[] amount = {5.00f, 5.05f, 4.55f, 5.65f, 4.99f};
+        float[] amount = {5.00f, 5.05f, 4.55f, 5.65f, 4.80f};
         int[] changeInNickels = {0, 1, 1, 1, 1};
 
         for (int i = 0; i < amount.length; i++) {
@@ -147,6 +147,22 @@ public class VendingMachineServiceLayerTest {
 
             Change change1 = service.purchaseItemFloat(amount[i], 5);
             Assert.assertEquals(change1.getNickels(), changeInNickels[i]);
+        }
+    }
+
+
+    @Test
+    public void testChangeInPennies() {
+        Item item = getOneItem();
+        float[] amount = {5.00f, 5.06f, 4.53f, 5.64f, 4.82f};
+        int[] changeInPenies = {0, 1, 3, 4, 2};
+
+        for (int i = 0; i < amount.length; i++) {
+            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+            System.out.println("amount: " + amount[i] + " Pennies: " + changeInPenies[i]);
+
+            Change change1 = service.purchaseItemFloat(amount[i], 5);
+            Assert.assertEquals(change1.getPennies(), changeInPenies[i]);
         }
     }
 
