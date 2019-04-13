@@ -29,7 +29,7 @@ public class ControllerTestWithJUnit {
     private Controller controller;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 

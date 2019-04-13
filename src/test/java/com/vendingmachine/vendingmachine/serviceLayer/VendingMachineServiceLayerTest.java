@@ -101,7 +101,6 @@ public class VendingMachineServiceLayerTest {
         Item item = getOneItem();
         float[] amount = {5.00f, 5.05f, 4.55f, 5.65f, 4.80f};
         int[] changeInNickels = {0, 1, 1, 1, 1};
-
         Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         for (int i = 0; i < amount.length; i++) {
