@@ -163,6 +163,7 @@ public class VendingMachineServiceLayerTest {
         return item;
     }
 
+
     private Item getSecondItem() {
         Item item = new Item();
         item.setId(4);

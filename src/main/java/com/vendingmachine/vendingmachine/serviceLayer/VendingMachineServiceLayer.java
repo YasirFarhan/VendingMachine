@@ -30,7 +30,7 @@ public class VendingMachineServiceLayer {
         if (optionalItem.get().getQuantity() <= 0) {
             throw new InsufficientInventoryException("Not Enough Inventory");
         }
-        Item item = convertOptionalToItem(optionalItem);
+        Item item = new Item(optionalItem);
         if (item.getPrice() > amount) {
             throw new InsufficientFundsException("Insufficient funds exception");
         }
@@ -39,19 +39,7 @@ public class VendingMachineServiceLayer {
         dao.save(item);
         amount = amount - item.getPrice();
         return calculateChangeFloat(amount);
-
     }
-
-    private Item convertOptionalToItem(Optional<Item> optional) {
-        Item item = new Item();
-        item.setId(optional.get().getId());
-        item.setName(optional.get().getName());
-        item.setPrice(optional.get().getPrice());
-        item.setQuantity(optional.get().getQuantity());
-
-        return item;
-    }
-
 
     private Change calculateChangeFloat(float amount) {
         Change change = new Change();

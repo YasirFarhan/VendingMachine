@@ -9,13 +9,23 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import java.util.Optional;
+
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(ItemsTable.TABLE_NAME)
 public class Item {
+    public Item() {
+    }
 
+    public Item(Optional<Item> optional) {
+        this.name = optional.get().getName();
+        this.price = optional.get().getPrice();
+        this.quantity = optional.get().getQuantity();
+        this.id = optional.get().getId();
+    }
+    
     @PrimaryKey
     @Column(ItemsTable.Columns.ID)
     int id;
@@ -61,4 +71,5 @@ public class Item {
     public void setPrice(float priceFloat) {
         this.price = priceFloat;
     }
+
 }
