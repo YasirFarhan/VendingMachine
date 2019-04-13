@@ -1,6 +1,7 @@
 package com.vendingmachine.vendingmachine.controller;
 
 import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
+import com.vendingmachine.vendingmachine.exceptions.ItemNotFoundException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.serviceLayer.VendingMachineServiceLayer;
@@ -24,7 +25,7 @@ public class Controller {
     }
 
     @GetMapping(path = "/money/{amount}/item/{selectedItem}")
-    public Change purchaseItem(@PathVariable float amount, @PathVariable Integer selectedItem) throws InsufficientFundsException {
+    public Change purchaseItem(@PathVariable float amount, @PathVariable Integer selectedItem) throws InsufficientFundsException, ItemNotFoundException {
         return  serviceLayer.purchaseItem(amount, selectedItem);
     }
 }

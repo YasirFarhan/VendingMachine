@@ -1,6 +1,7 @@
 package com.vendingmachine.vendingmachine.serviceLayer;
 
 import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
+import com.vendingmachine.vendingmachine.exceptions.ItemNotFoundException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
@@ -26,18 +27,30 @@ public class VendingMachineServiceLayerTest {
 
 
     @Test(expected = InsufficientFundsException.class)
-    public void testInsufficientFundsException() throws InsufficientFundsException {
+    public void testInsufficientFundsException() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
         service.purchaseItem(1f, 5);
         Mockito.verify(itemsDAO, Mockito.times(1)).findById(5);
         Mockito.verify(itemsDAO, Mockito.times(0)).save(item);
     }
 
+    @Test(expected = ItemNotFoundException.class)
+    public void testItemNotFoundException() throws InsufficientFundsException, ItemNotFoundException {
+        Item item = null;
+
+        Mockito.doReturn(Optional.ofNullable(null)).when(itemsDAO).findById(5);
+        service.purchaseItem(1f, 5);
+        Mockito.verify(itemsDAO, Mockito.times(1)).findById(5);
+        Mockito.verify(itemsDAO, Mockito.times(0)).save(item);
+    }
+
+
+
     @Test
-    public void testPurchaseItemCallFindMethodFromDAOAndSaveMethodWithReducedInventory() throws InsufficientFundsException {
+    public void testPurchaseItemCallFindMethodFromDAOAndSaveMethodWithReducedInventory() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
         service.purchaseItem(5, 5);
         item.setQuantity(item.getQuantity() - 1);
         Mockito.verify(itemsDAO, Mockito.times(1)).findById(5);
@@ -55,15 +68,13 @@ public class VendingMachineServiceLayerTest {
 
 
     @Test
-    public void testChangeInQuarters() throws InsufficientFundsException {
+    public void testChangeInQuarters() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
         float[] amount = {5f, 4.5f, 5.53f, 4.7f, 4.99f};
         int[] changeInQuarters = {12, 10, 14, 10, 11};
 
         for (int i = 0; i < amount.length; i++) {
-            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
-            System.out.println("amount: " + amount[i] + " qtrs: " + changeInQuarters[i]);
-
+            Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
             Change change1 = service.purchaseItem(amount[i], 5);
             Assert.assertEquals(change1.getQuarters(), changeInQuarters[i]);
         }
@@ -72,15 +83,13 @@ public class VendingMachineServiceLayerTest {
     }
 
     @Test
-    public void testChangeInDime() throws InsufficientFundsException {
+    public void testChangeInDime() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
         float[] amount = {5f, 4.5f, 5.60f, 4.80f, 4.99f};
         int[] changeInDimes = {0, 0, 1, 0, 2};
 
         for (int i = 0; i < amount.length; i++) {
-            Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
-            System.out.println("amount: " + amount[i] + " dimes: " + changeInDimes[i]);
-
+            Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
             Change change1 = service.purchaseItem(amount[i], 5);
             Assert.assertEquals(change1.getDimes(), changeInDimes[i]);
         }
@@ -89,16 +98,14 @@ public class VendingMachineServiceLayerTest {
 
 
     @Test
-    public void testChangeInNickels() throws InsufficientFundsException {
+    public void testChangeInNickels() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
         float[] amount = {5.00f, 5.05f, 4.55f, 5.65f, 4.80f};
         int[] changeInNickels = {0, 1, 1, 1, 1};
 
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         for (int i = 0; i < amount.length; i++) {
-            System.out.println("amount: " + amount[i] + " Nickels: " + changeInNickels[i]);
-
             Change change1 = service.purchaseItem(amount[i], 5);
             Assert.assertEquals(change1.getNickels(), changeInNickels[i]);
         }
@@ -106,25 +113,23 @@ public class VendingMachineServiceLayerTest {
 
 
     @Test
-    public void testChangeInPennies() throws InsufficientFundsException {
+    public void testChangeInPennies() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
         float[] amount = {5.00f, 5.06f, 4.53f, 5.64f, 4.82f};
-        int[] changeInPenies = {0, 1, 3, 4, 2};
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+        int[] changeInPennies = {0, 1, 3, 4, 2};
+        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         for (int i = 0; i < amount.length; i++) {
-            System.out.println("amount: " + amount[i] + " Pennies: " + changeInPenies[i]);
-
             Change change1 = service.purchaseItem(amount[i], 5);
-            Assert.assertEquals(change1.getPennies(), changeInPenies[i]);
+            Assert.assertEquals(change1.getPennies(), changeInPennies[i]);
         }
     }
 
     @Test
-    public void testCompleteChangeFor5DollarsAnd66CentsInput() throws InsufficientFundsException {
+    public void testCompleteChangeFor5DollarsAnd66CentsInput() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
 
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         Change change1 = service.purchaseItem(5.66f, 5);
         Assert.assertEquals(change1.getQuarters(), 14);
@@ -134,10 +139,10 @@ public class VendingMachineServiceLayerTest {
     }
 
     @Test
-    public void testNoChangeIsGivenWhenTheAmountIsEqualToThePrice() throws InsufficientFundsException {
+    public void testNoChangeIsGivenWhenTheAmountIsEqualToThePrice() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
 
-        Mockito.doReturn(convertItemToOptional(item)).when(itemsDAO).findById(5);
+        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         Change change1 = service.purchaseItem(2f, 5);
         Assert.assertEquals(0, change1.getQuarters());
@@ -164,14 +169,4 @@ public class VendingMachineServiceLayerTest {
         return item1;
     }
 
-
-    private Optional<Item> convertItemToOptional(Item item) {
-        Optional<Item> optionalItem = Optional.of(new Item());
-        optionalItem.get().setId(item.getId());
-        optionalItem.get().setName(item.getName());
-        optionalItem.get().setPrice(item.getPrice());
-        optionalItem.get().setQuantity(item.getQuantity());
-        optionalItem.get().setPrice(item.getPrice());
-        return optionalItem;
-    }
 }
