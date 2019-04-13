@@ -104,8 +104,8 @@ public class VendingMachineServiceLayerTest {
         Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         for (int i = 0; i < amount.length; i++) {
-            Change change1 = service.purchaseItem(amount[i], 5);
-            Assert.assertEquals(change1.getNickels(), changeInNickels[i]);
+            Change change = service.purchaseItem(amount[i], 5);
+            Assert.assertEquals(change.getNickels(), changeInNickels[i]);
         }
     }
 
@@ -117,8 +117,8 @@ public class VendingMachineServiceLayerTest {
         Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
 
         for (int i = 0; i < amount.length; i++) {
-            Change change1 = service.purchaseItem(amount[i], 5);
-            Assert.assertEquals(change1.getPennies(), changeInPennies[i]);
+            Change change = service.purchaseItem(amount[i], 5);
+            Assert.assertEquals(change.getPennies(), changeInPennies[i]);
         }
     }
 
