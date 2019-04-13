@@ -42,34 +42,6 @@ public class VendingMachineServiceLayerTest {
         Mockito.verify(itemsDAO, Mockito.times(1)).findAll();
     }
 
-    private List listOfItems() {
-        List listOfITems = new ArrayList<Item>();
-        Item item1 = getOneItem();
-        listOfITems.add(item1);
-        Item item2 = getOneItem();
-        listOfITems.add(item2);
-        return listOfITems;
-    }
-
-    private Item getOneItem() {
-        Item item1 = new Item();
-        item1.setId(5);
-        item1.setName("Coke");
-        item1.setQuantity(10);
-        item1.setPrice(2.00f);
-        return item1;
-    }
-
-    private Optional<Item> convertItemToOptional(Item item) {
-        Optional<Item> optionalItem = Optional.of(new Item());
-        optionalItem.get().setId(item.getId());
-        optionalItem.get().setName(item.getName());
-        optionalItem.get().setPrice(item.getPrice());
-        optionalItem.get().setQuantity(item.getQuantity());
-        optionalItem.get().setPrice(item.getPrice());
-        return optionalItem;
-    }
-
 
     @Test
     public void testChangeInQuarters() {
@@ -163,7 +135,32 @@ public class VendingMachineServiceLayerTest {
         Assert.assertEquals(0, change1.getPennies());
     }
 
+    private List listOfItems() {
+        List listOfITems = new ArrayList<Item>();
+        Item item1 = getOneItem();
+        listOfITems.add(item1);
+        Item item2 = getOneItem();
+        listOfITems.add(item2);
+        return listOfITems;
+    }
+
+    private Item getOneItem() {
+        Item item1 = new Item();
+        item1.setId(5);
+        item1.setName("Coke");
+        item1.setQuantity(10);
+        item1.setPrice(2.00f);
+        return item1;
+    }
 
 
-
+    private Optional<Item> convertItemToOptional(Item item) {
+        Optional<Item> optionalItem = Optional.of(new Item());
+        optionalItem.get().setId(item.getId());
+        optionalItem.get().setName(item.getName());
+        optionalItem.get().setPrice(item.getPrice());
+        optionalItem.get().setQuantity(item.getQuantity());
+        optionalItem.get().setPrice(item.getPrice());
+        return optionalItem;
+    }
 }
