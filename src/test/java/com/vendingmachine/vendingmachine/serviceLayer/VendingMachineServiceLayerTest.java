@@ -1,6 +1,7 @@
 package com.vendingmachine.vendingmachine.serviceLayer;
 
 import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
+import com.vendingmachine.vendingmachine.exceptions.InsufficientInventoryException;
 import com.vendingmachine.vendingmachine.exceptions.ItemNotFoundException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
@@ -25,6 +26,21 @@ public class VendingMachineServiceLayerTest {
     @Mock
     ItemsDAO itemsDAO;
 
+    @Test
+    public void testFindAllItems() {
+        Mockito.doReturn(listOfItems()).when(itemsDAO).findAll();
+        List itemsList = service.getAllItems();
+        Assert.assertEquals(itemsList.size(), 2);
+        Mockito.verify(itemsDAO, Mockito.times(1)).findAll();
+    }
+    @Test(expected = InsufficientInventoryException.class)
+    public void testInsufficientInventoryException() throws InsufficientFundsException, ItemNotFoundException {
+//        Item item = getOneItem();
+//        Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
+//        service.purchaseItem(1f, 5);
+//        Mockito.verify(itemsDAO, Mockito.times(1)).findById(5);
+//        Mockito.verify(itemsDAO, Mockito.times(0)).save(item);
+    }
 
     @Test(expected = InsufficientFundsException.class)
     public void testInsufficientFundsException() throws InsufficientFundsException, ItemNotFoundException {
@@ -37,15 +53,11 @@ public class VendingMachineServiceLayerTest {
 
     @Test(expected = ItemNotFoundException.class)
     public void testItemNotFoundException() throws InsufficientFundsException, ItemNotFoundException {
-        Item item = null;
-
         Mockito.doReturn(Optional.ofNullable(null)).when(itemsDAO).findById(5);
         service.purchaseItem(1f, 5);
         Mockito.verify(itemsDAO, Mockito.times(1)).findById(5);
-        Mockito.verify(itemsDAO, Mockito.times(0)).save(item);
+        Mockito.verify(itemsDAO, Mockito.times(0)).save(Mockito.any(Item.class));
     }
-
-
 
     @Test
     public void testPurchaseItemCallFindMethodFromDAOAndSaveMethodWithReducedInventory() throws InsufficientFundsException, ItemNotFoundException {
@@ -56,16 +68,6 @@ public class VendingMachineServiceLayerTest {
         Mockito.verify(itemsDAO, Mockito.times(1)).findById(5);
         Mockito.verify(itemsDAO, Mockito.times(1)).save(item);
     }
-
-
-    @Test
-    public void testFindAllItems() {
-        Mockito.doReturn(listOfItems()).when(itemsDAO).findAll();
-        List itemsList = service.getAllItems();
-        Assert.assertEquals(itemsList.size(), 2);
-        Mockito.verify(itemsDAO, Mockito.times(1)).findAll();
-    }
-
 
     @Test
     public void testChangeInQuarters() throws InsufficientFundsException, ItemNotFoundException {
@@ -78,8 +80,6 @@ public class VendingMachineServiceLayerTest {
             Change change1 = service.purchaseItem(amount[i], 5);
             Assert.assertEquals(change1.getQuarters(), changeInQuarters[i]);
         }
-
-
     }
 
     @Test
@@ -93,9 +93,7 @@ public class VendingMachineServiceLayerTest {
             Change change1 = service.purchaseItem(amount[i], 5);
             Assert.assertEquals(change1.getDimes(), changeInDimes[i]);
         }
-
     }
-
 
     @Test
     public void testChangeInNickels() throws InsufficientFundsException, ItemNotFoundException {
@@ -110,7 +108,6 @@ public class VendingMachineServiceLayerTest {
             Assert.assertEquals(change1.getNickels(), changeInNickels[i]);
         }
     }
-
 
     @Test
     public void testChangeInPennies() throws InsufficientFundsException, ItemNotFoundException {
@@ -128,9 +125,7 @@ public class VendingMachineServiceLayerTest {
     @Test
     public void testCompleteChangeFor5DollarsAnd66CentsInput() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
-
         Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
-
         Change change1 = service.purchaseItem(5.66f, 5);
         Assert.assertEquals(change1.getQuarters(), 14);
         Assert.assertEquals(change1.getDimes(), 1);
@@ -141,9 +136,7 @@ public class VendingMachineServiceLayerTest {
     @Test
     public void testNoChangeIsGivenWhenTheAmountIsEqualToThePrice() throws InsufficientFundsException, ItemNotFoundException {
         Item item = getOneItem();
-
         Mockito.doReturn(Optional.of(item)).when(itemsDAO).findById(5);
-
         Change change1 = service.purchaseItem(2f, 5);
         Assert.assertEquals(0, change1.getQuarters());
         Assert.assertEquals(0, change1.getDimes());
@@ -153,10 +146,9 @@ public class VendingMachineServiceLayerTest {
 
     private List listOfItems() {
         List listOfItems = new ArrayList<Item>();
-        Item item1 = getOneItem();
-        listOfItems.add(item1);
-        Item item2 = getOneItem();
-        listOfItems.add(item2);
+        listOfItems.add(getOneItem());
+        listOfItems.add(getSecondItem());
+        listOfItems.add(getItemWithNoInventory());
         return listOfItems;
     }
 
@@ -165,6 +157,24 @@ public class VendingMachineServiceLayerTest {
         item1.setId(5);
         item1.setName("Coke");
         item1.setQuantity(10);
+        item1.setPrice(2.00f);
+        return item1;
+    }
+
+    private Item getSecondItem() {
+        Item item1 = new Item();
+        item1.setId(4);
+        item1.setName("Orange");
+        item1.setQuantity(10);
+        item1.setPrice(2.00f);
+        return item1;
+    }
+
+    private Item getItemWithNoInventory() {
+        Item item1 = new Item();
+        item1.setId(3);
+        item1.setName("Pepsi");
+        item1.setQuantity(0);
         item1.setPrice(2.00f);
         return item1;
     }

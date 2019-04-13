@@ -10,15 +10,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VendingMachineServiceLayer {
     @Autowired
     ItemsDAO dao;
-    double qtr = 4.00;
 
     public List<Item> getAllItems() {
-        return dao.findAll();
+        return dao.findAll().stream().filter(c -> c.getQuantity() > 0).collect(Collectors.toList());
     }
 
     public Change purchaseItem(float amount, Integer selectedItem) throws InsufficientFundsException, ItemNotFoundException {
@@ -26,6 +26,7 @@ public class VendingMachineServiceLayer {
         if (!optionalItem.isPresent()) {
             throw new ItemNotFoundException("Item not found exception");
         }
+
         Item item = convertOptionalToItem(optionalItem);
 
         if (item.getPrice() > amount) {
