@@ -42,7 +42,7 @@ public class VendingMachineServiceLayer {
     }
 
 
-    private Change calcualteChangeFloat(Float amount) {
+    private Change calcualteChangeFloat(float amount) {
         Change change = new Change();
         int amountInPennies = (int) (amount * 100f);
         int quarters = amountInPennies / 25;
