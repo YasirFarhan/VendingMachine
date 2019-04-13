@@ -24,7 +24,7 @@ public class Controller {
     }
 
     @GetMapping(path = "/money/{amount}/item/{selectedItem}")
-    public Change purchaseItem(@PathVariable double amount, @PathVariable Integer selectedItem) {
+    public Change purchaseItem(@PathVariable float amount, @PathVariable Integer selectedItem) {
 
         return  serviceLayer.purchaseItem(amount, selectedItem);
     }

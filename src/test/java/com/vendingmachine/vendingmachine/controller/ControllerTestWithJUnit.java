@@ -38,7 +38,6 @@ public class ControllerTestWithJUnit {
     public void testGetAllItems() throws Exception {
         mockMvc.perform(get("/items").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
-
         Mockito.verify(service, Mockito.times(1)).getAllItems();
     }
 
@@ -46,7 +45,7 @@ public class ControllerTestWithJUnit {
     public void testPurcahseItem() throws Exception {
         mockMvc.perform(get("/money/10/item/5").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
-        Mockito.verify(service, Mockito.times(1)).purchaseItem(10d, 5);
+        Mockito.verify(service, Mockito.times(1)).purchaseItem(10f, 5);
     }
 
 

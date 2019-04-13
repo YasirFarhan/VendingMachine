@@ -23,10 +23,8 @@ public class Item {
     @Column(ItemsTable.Columns.NAME)
     private String name;
 
-
     @Column(ItemsTable.Columns.PRICE)
-    private double price;
-
+    private float price;
 
     @Column(ItemsTable.Columns.QUANTITY)
     private int quantity;
@@ -47,14 +45,6 @@ public class Item {
         this.name = name;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -64,16 +54,11 @@ public class Item {
     }
 
 
-    //////////
-
-    @Column(ItemsTable.Columns.PRICE)
-    private Float priceFloat;
-
-    public Float getPriceFloat() {
-        return priceFloat;
+    public float getPrice() {
+        return price;
     }
 
-    public void setPriceFloat(Float priceFloat) {
-        this.priceFloat = priceFloat;
+    public void setPrice(float priceFloat) {
+        this.price = priceFloat;
     }
 }
