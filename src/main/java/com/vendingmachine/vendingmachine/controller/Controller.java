@@ -1,8 +1,8 @@
 package com.vendingmachine.vendingmachine.controller;
 
+import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
-import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
 import com.vendingmachine.vendingmachine.serviceLayer.VendingMachineServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +24,7 @@ public class Controller {
     }
 
     @GetMapping(path = "/money/{amount}/item/{selectedItem}")
-    public Change purchaseItem(@PathVariable float amount, @PathVariable Integer selectedItem) {
-
+    public Change purchaseItem(@PathVariable float amount, @PathVariable Integer selectedItem) throws InsufficientFundsException {
         return  serviceLayer.purchaseItem(amount, selectedItem);
     }
 }

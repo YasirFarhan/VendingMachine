@@ -1,5 +1,6 @@
 package com.vendingmachine.vendingmachine.serviceLayer;
 
+import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
@@ -20,9 +21,13 @@ public class VendingMachineServiceLayer {
         return item;
     }
 
-    public Change purchaseItem(float amount, Integer selectedItem) {
+    public Change purchaseItem(float amount, Integer selectedItem) throws InsufficientFundsException {
         Optional<Item> optionalItem = dao.findById(selectedItem);
         Item item = convertOptionalToItem(optionalItem);
+
+        if (item.getPrice() > amount) {
+            throw new InsufficientFundsException("Insufficient Funds Exception");
+        }
 
         item.setQuantity(item.getQuantity() - 1);
         dao.save(item);
@@ -66,3 +71,4 @@ public class VendingMachineServiceLayer {
         return change;
     }
 }
+
