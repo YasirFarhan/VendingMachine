@@ -1,6 +1,7 @@
 package com.vendingmachine.vendingmachine.serviceLayer;
 
 import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
+import com.vendingmachine.vendingmachine.exceptions.InsufficientInventoryException;
 import com.vendingmachine.vendingmachine.exceptions.ItemNotFoundException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
@@ -21,14 +22,15 @@ public class VendingMachineServiceLayer {
         return dao.findAll().stream().filter(c -> c.getQuantity() > 0).collect(Collectors.toList());
     }
 
-    public Change purchaseItem(float amount, Integer selectedItem) throws InsufficientFundsException, ItemNotFoundException {
+    public Change purchaseItem(float amount, Integer selectedItem) throws Exception {
         Optional<Item> optionalItem = dao.findById(selectedItem);
         if (!optionalItem.isPresent()) {
             throw new ItemNotFoundException("Item not found exception");
         }
-
+        if (optionalItem.get().getQuantity() <= 0) {
+            throw new InsufficientInventoryException("Not Enough Inventory");
+        }
         Item item = convertOptionalToItem(optionalItem);
-
         if (item.getPrice() > amount) {
             throw new InsufficientFundsException("Insufficient funds exception");
         }
