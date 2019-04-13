@@ -1,6 +1,7 @@
 package com.vendingmachine.vendingmachine.serviceLayer;
 
 import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
+import com.vendingmachine.vendingmachine.exceptions.InsufficientInventoryException;
 import com.vendingmachine.vendingmachine.exceptions.ItemNotFoundException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
@@ -10,24 +11,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VendingMachineServiceLayer {
     @Autowired
     ItemsDAO dao;
-    double qtr = 4.00;
 
     public List<Item> getAllItems() {
-        return dao.findAll();
+        return dao.findAll().stream().filter(c -> c.getQuantity() > 0).collect(Collectors.toList());
     }
 
-    public Change purchaseItem(float amount, Integer selectedItem) throws InsufficientFundsException, ItemNotFoundException {
+    public Change purchaseItem(float amount, Integer selectedItem) throws Exception {
         Optional<Item> optionalItem = dao.findById(selectedItem);
         if (!optionalItem.isPresent()) {
             throw new ItemNotFoundException("Item not found exception");
         }
-        Item item = convertOptionalToItem(optionalItem);
-
+        if (optionalItem.get().getQuantity() <= 0) {
+            throw new InsufficientInventoryException("Not Enough Inventory");
+        }
+        Item item = new Item(optionalItem);
         if (item.getPrice() > amount) {
             throw new InsufficientFundsException("Insufficient funds exception");
         }
@@ -35,22 +38,10 @@ public class VendingMachineServiceLayer {
         item.setQuantity(item.getQuantity() - 1);
         dao.save(item);
         amount = amount - item.getPrice();
-        return calculateChangeFloat(amount);
-
+        return calculateChange(amount);
     }
 
-    private Item convertOptionalToItem(Optional<Item> optional) {
-        Item item = new Item();
-        item.setId(optional.get().getId());
-        item.setName(optional.get().getName());
-        item.setPrice(optional.get().getPrice());
-        item.setQuantity(optional.get().getQuantity());
-
-        return item;
-    }
-
-
-    private Change calculateChangeFloat(float amount) {
+    private Change calculateChange(float amount) {
         Change change = new Change();
         int amountInPennies = (int) (amount * 100f);
         int quarters = amountInPennies / 25;
