@@ -1,5 +1,7 @@
 package com.vendingmachine.vendingmachine.serviceLayer;
 
+import com.vendingmachine.vendingmachine.exceptions.InsufficientFundsException;
+import com.vendingmachine.vendingmachine.exceptions.ItemNotFoundException;
 import com.vendingmachine.vendingmachine.model.Change;
 import com.vendingmachine.vendingmachine.model.Item;
 import com.vendingmachine.vendingmachine.persistance.ItemsDAO;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class VendingMachineServiceLayer {
@@ -17,17 +18,24 @@ public class VendingMachineServiceLayer {
     double qtr = 4.00;
 
     public List<Item> getAllItems() {
-        return dao.findAll().stream().filter(c -> c.getQuantity() > 0).collect(Collectors.toList());
+        return dao.findAll();
     }
 
-    public Change purchaseItem(float amount, Integer selectedItem) {
+    public Change purchaseItem(float amount, Integer selectedItem) throws InsufficientFundsException, ItemNotFoundException {
         Optional<Item> optionalItem = dao.findById(selectedItem);
+        if (!optionalItem.isPresent()) {
+            throw new ItemNotFoundException("Item not found exception");
+        }
         Item item = convertOptionalToItem(optionalItem);
+
+        if (item.getPrice() > amount) {
+            throw new InsufficientFundsException("Insufficient funds exception");
+        }
 
         item.setQuantity(item.getQuantity() - 1);
         dao.save(item);
         amount = amount - item.getPrice();
-        return calcualteChangeFloat(amount);
+        return calculateChangeFloat(amount);
 
     }
 
@@ -42,7 +50,7 @@ public class VendingMachineServiceLayer {
     }
 
 
-    private Change calcualteChangeFloat(float amount) {
+    private Change calculateChangeFloat(float amount) {
         Change change = new Change();
         int amountInPennies = (int) (amount * 100f);
         int quarters = amountInPennies / 25;
@@ -66,3 +74,4 @@ public class VendingMachineServiceLayer {
         return change;
     }
 }
+
