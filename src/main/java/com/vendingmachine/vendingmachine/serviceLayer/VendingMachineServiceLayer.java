@@ -38,10 +38,10 @@ public class VendingMachineServiceLayer {
         item.setQuantity(item.getQuantity() - 1);
         dao.save(item);
         amount = amount - item.getPrice();
-        return calculateChangeFloat(amount);
+        return calculateChange(amount);
     }
 
-    private Change calculateChangeFloat(float amount) {
+    private Change calculateChange(float amount) {
         Change change = new Change();
         int amountInPennies = (int) (amount * 100f);
         int quarters = amountInPennies / 25;

@@ -28,7 +28,6 @@ public class ControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
-
     @Test
     public void testGetAllItems() throws Exception {
         mockMvc.perform(get("/items").accept(MediaType.APPLICATION_JSON))
@@ -38,13 +37,6 @@ public class ControllerTest {
 
     @Test
     public void testPurchaseItem() throws Exception {
-        mockMvc.perform(get("/money/10/item/5").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful());
-        Mockito.verify(service, Mockito.times(1)).purchaseItem(10f, 5);
-    }
-
-    @Test
-    public void testNonNullParameters() throws Exception {
         mockMvc.perform(get("/money/10/item/5").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
         Mockito.verify(service, Mockito.times(1)).purchaseItem(10f, 5);
